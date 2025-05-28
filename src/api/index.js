@@ -98,7 +98,7 @@ export const voteForIdea = async (ideaId, voteType) => {
     throw new Error(error.response?.data?.message || 'Failed to vote for idea');
   }
 };
-
+/*p */
 export const getCategories = async () => {
   try {
     const response = await api.get('/ideas/categories');
