@@ -5,10 +5,11 @@ import { createIdea, getCategories, getStatuses } from '../api';
 const CreateIdeaForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    summary: '',
-    description: '',
-    categoryId: 0,
-    status: 'pending'
+    name: '',
+    text: '',
+    author: '',
+    category: 0,
+    status: 0,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -61,14 +62,14 @@ const CreateIdeaForm = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-sm text-gray-600 mb-2">
-            Основной смысл
+            Название
             <span className="text-xs text-gray-400 ml-1">(5-6 слов)</span>
           </label>
           <input
             type="text"
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            value={formData.summary}
-            onChange={(e) => setFormData(prev => ({ ...prev, summary: e.target.value }))}
+            value={formData.name}
+            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
             required
             disabled={loading}
           />
@@ -80,8 +81,8 @@ const CreateIdeaForm = () => {
           </label>
           <textarea
             className="w-full p-3 border border-gray-300 rounded-lg h-32 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            value={formData.text}
+            onChange={(e) => setFormData(prev => ({ ...prev, text: e.target.value }))}
             required
             disabled={loading}
           />

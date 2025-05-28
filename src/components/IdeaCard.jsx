@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { voteForIdea } from '../api';
 import CategoryTag from './CategoryTag';
 
+
 const IdeaCard = ({ idea }) => {
   const navigate = useNavigate();
   const [isVoting, setIsVoting] = React.useState(false);
@@ -32,12 +33,12 @@ const IdeaCard = ({ idea }) => {
       onClick={() => navigate(`/idea/${idea.id}`)}
     >
       <div className="flex justify-between items-start mb-4">
-        <h2 className="text-xl font-bold">IDEA {idea.id}</h2>
+        <h2 className="text-xl font-bold">IDEA {idea.Name}</h2>
         <span className="text-sm text-gray-500">{formatDate(idea.createdAt)}</span>
       </div>
       
-      <p className="text-gray-700 mb-4">{idea.summary}</p>
-      
+      <p className="text-gray-700 mb-4">{idea.Text}</p>
+
       <div className="flex flex-wrap mb-4">
         {idea.categories?.map(category => (
           <CategoryTag key={category} category={category} />
@@ -51,7 +52,7 @@ const IdeaCard = ({ idea }) => {
           disabled={isVoting}
         >
           <FaThumbsUp className="text-green-500" />
-          <span className="text-gray-700">{idea.upVotes || 0}</span>
+          <span className="text-gray-700">{idea.LikeCount || 0}</span>
         </button>
         <button 
           className={`flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-100 ${isVoting ? 'opacity-50' : ''}`}
@@ -59,7 +60,7 @@ const IdeaCard = ({ idea }) => {
           disabled={isVoting}
         >
           <FaThumbsDown className="text-red-500" />
-          <span className="text-gray-700">{idea.downVotes || 0}</span>
+          <span className="text-gray-700">{idea.DislikeCount || 0}</span>
         </button>
       </div>
     </div>

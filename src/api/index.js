@@ -79,9 +79,8 @@ export const createIdea = async (ideaData) => {
   try {
     const data = {
       ...ideaData,
-      categoryId: 0,
-      status: 'pending'
     };
+    console.log('Creating idea:', data);
     const response = await api.post('/ideas', data);
     return response.data;
   } catch (error) {

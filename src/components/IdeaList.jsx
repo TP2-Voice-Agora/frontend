@@ -14,6 +14,7 @@ const IdeaList = () => {
         if (data == null){
 
         }
+        console.log(data);
         setIdeas(data);
         setError(null);
       } catch (error) {
@@ -42,7 +43,7 @@ const IdeaList = () => {
     );
   }
 
-  if (!ideas.length) {
+  if (ideas === null) {
     return (
       <div className="my-6 text-center text-gray-500">
         No ideas found.
