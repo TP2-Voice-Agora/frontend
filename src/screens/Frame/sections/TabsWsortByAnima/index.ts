@@ -1,0 +1,1 @@
+export { TabsWsortByAnima } from "./TabsWsortByAnima";
