@@ -1,11 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 const SortControls = ({ sortBy, setSortBy, selectedCategories, setSelectedCategories }) => {
   const [isDateDropdownOpen, setIsDateDropdownOpen] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   
+  const dateDropdownRef = useRef(null);
+  const categoryDropdownRef = useRef(null);
+  
   const categories = ['Срочно', 'Бюджет', 'Развитие', 'Дизайн/брендинг', 'Эксперимент', 'Маркетинг', 'Производство'];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dateDropdownRef.current && !dateDropdownRef.current.contains(event.target)) {
+        setIsDateDropdownOpen(false);
+      }
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+        setIsCategoryDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const toggleCategory = (category) => {
     if (selectedCategories.includes(category)) {
@@ -16,23 +33,21 @@ const SortControls = ({ sortBy, setSortBy, selectedCategories, setSelectedCatego
   };
 
   return (
-    <div className="flex items-center space-x-3">
-      <div className="text-gray-600">Сортировать по:</div>
-      <div className="flex items-center space-x-3">
-        <div className="relative">
+    <div className="flex items-center space-x-4">
+      <span className="text-gray-600 text-sm">Сортировать по:</span>
+      <div className="flex items-center space-x-2">
+        <div className="relative" ref={dateDropdownRef}>
           <button 
-            className="sort-button"
+            className="flex items-center space-x-1 px-3 py-2 bg-white border border-gray-200 rounded-md text-sm hover:bg-gray-50"
             onClick={() => setIsDateDropdownOpen(!isDateDropdownOpen)}
           >
-            <span className="mr-2 text-blue-500">
-              <FaChevronDown className="inline-block mr-1" />
-              Дата создания
-            </span>
+            <FaChevronDown className="text-blue-500" />
+            <span className="text-blue-500">Дата создания</span>
           </button>
           {isDateDropdownOpen && (
-            <div className="absolute top-10 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-10 w-40">
+            <div className="absolute top-full mt-1 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10 w-40">
               <div 
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                className="px-4 py-2 hover:bg-gray-50 cursor-pointer"
                 onClick={() => {
                   setSortBy('date');
                   setIsDateDropdownOpen(false);
@@ -41,7 +56,7 @@ const SortControls = ({ sortBy, setSortBy, selectedCategories, setSelectedCatego
                 По дате создания
               </div>
               <div 
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                className="px-4 py-2 hover:bg-gray-50 cursor-pointer"
                 onClick={() => {
                   setSortBy('popularity');
                   setIsDateDropdownOpen(false);
@@ -53,22 +68,20 @@ const SortControls = ({ sortBy, setSortBy, selectedCategories, setSelectedCatego
           )}
         </div>
         
-        <div className="relative">
+        <div className="relative" ref={categoryDropdownRef}>
           <button 
-            className="sort-button"
+            className="flex items-center space-x-1 px-3 py-2 bg-white border border-gray-200 rounded-md text-sm hover:bg-gray-50"
             onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
           >
-            <span className="mr-2 text-blue-500">
-              <FaChevronDown className="inline-block mr-1" />
-              Категории
-            </span>
+            <FaChevronDown className="text-blue-500" />
+            <span className="text-blue-500">Категории</span>
           </button>
           {isCategoryDropdownOpen && (
-            <div className="absolute top-10 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-10 w-48">
+            <div className="absolute top-full mt-1 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10 w-48">
               {categories.map(category => (
                 <div 
                   key={category}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center"
                   onClick={() => toggleCategory(category)}
                 >
                   <input 

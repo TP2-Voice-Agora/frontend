@@ -7,26 +7,14 @@ body {
   @apply bg-gray-50;
 }
 
-.tab-active {
-  @apply bg-primary text-white;
-}
-
-.tab-inactive {
-  @apply bg-white text-gray-700 border border-gray-300;
-}
-
 .idea-card {
-  @apply rounded-md p-5 mb-4 transition-all duration-300 hover:shadow-lg;
+  @apply bg-white rounded-lg p-6 mb-4 shadow-sm hover:shadow-md transition-shadow;
 }
 
 .tag {
-  @apply text-xs text-white rounded-full px-3 py-1 mr-2;
-}
-
-.sort-button {
-  @apply flex items-center text-sm border border-gray-300 rounded px-3 py-1 bg-white;
+  @apply text-xs text-white rounded-full px-3 py-1 mr-2 mb-2;
 }
 
 .vote-button {
-  @apply flex items-center mr-3;
+  @apply flex items-center space-x-1 px-2 py-1 rounded-md hover:bg-gray-100 transition-colors;
 }

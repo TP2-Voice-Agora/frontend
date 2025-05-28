@@ -13,11 +13,11 @@ const FilterTabs = ({ activeTab, setActiveTab }) => {
       {tabs.map(tab => (
         <button
           key={tab.id}
-          className={`px-4 py-2 rounded-md transition-all duration-200 ${
+          className={`px-4 py-2 rounded-md text-sm transition-all duration-200 ${
             activeTab === tab.id 
-              ? 'tab-active'
-              : 'tab-inactive hover:bg-gray-50'
-          } ${tab.id === 'rejected' ? 'text-red-500' : ''}`}
+              ? 'bg-blue-500 text-white'
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+          }`}
           onClick={() => setActiveTab(tab.id)}
         >
           {tab.label}

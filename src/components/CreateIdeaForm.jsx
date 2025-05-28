@@ -1,91 +1,109 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createIdea, getCategories, getStatuses } from '../api';
 
 const CreateIdeaForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     summary: '',
     description: '',
-    categories: []
+    categoryId: 0,
+    status: 'pending'
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [statuses, setStatuses] = useState([]);
 
-  const categories = ['Срочно', 'Бюджет', 'Креатив', 'Долгосрочное', 'Эксперимент', 'Перспективное'];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [categoriesData, statusesData] = await Promise.all([
+          getCategories(),
+          getStatuses()
+        ]);
+        setCategories(categoriesData);
+        setStatuses(statusesData);
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+        setError('Failed to load form data');
+      }
+    };
+    fetchData();
+  }, []);
 
-  const toggleCategory = (category) => {
-    setFormData(prev => ({
-      ...prev,
-      categories: prev.categories.includes(category)
-        ? prev.categories.filter(c => c !== category)
-        : [...prev.categories, category]
-    }));
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    navigate('/');
+    setLoading(true);
+    setError(null);
+
+    try {
+      await createIdea(formData);
+      navigate('/');
+    } catch (error) {
+      setError('Failed to create idea. Please try again.');
+      console.error('Error creating idea:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="max-w-2xl mx-auto mt-8 bg-white rounded-lg shadow-lg p-6">
       <h1 className="text-2xl font-bold mb-6">Создать идею</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-6">
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
           <label className="block text-sm text-gray-600 mb-2">
             Основной смысл
             <span className="text-xs text-gray-400 ml-1">(5-6 слов)</span>
           </label>
           <input
             type="text"
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={formData.summary}
             onChange={(e) => setFormData(prev => ({ ...prev, summary: e.target.value }))}
+            required
+            disabled={loading}
           />
         </div>
 
-        <div className="mb-6">
+        <div>
           <label className="block text-sm text-gray-600 mb-2">
-            Полный текст идеи...
+            Полный текст идеи
           </label>
           <textarea
-            className="w-full p-2 border border-gray-300 rounded-md h-32"
+            className="w-full p-3 border border-gray-300 rounded-lg h-32 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            required
+            disabled={loading}
           />
-        </div>
-
-        <div className="mb-6">
-          <div className="flex flex-wrap gap-2">
-            {categories.map(category => (
-              <button
-                key={category}
-                type="button"
-                className={`px-4 py-2 rounded-full text-sm ${
-                  formData.categories.includes(category)
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100 text-gray-700'
-                }`}
-                onClick={() => toggleCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="flex justify-end space-x-3">
           <button
             type="button"
-            className="px-6 py-2 border border-gray-300 rounded-md text-gray-700"
+            className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
             onClick={() => navigate('/')}
+            disabled={loading}
           >
             Отмена
           </button>
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className={`px-6 py-2 bg-blue-500 text-white rounded-lg transition-colors ${
+              loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
+            }`}
+            disabled={loading}
           >
-            Добавить
+            {loading ? 'Создание...' : 'Добавить'}
           </button>
         </div>
       </form>
@@ -93,4 +111,4 @@ const CreateIdeaForm = () => {
   );
 };
 
-export default CreateIdeaForm;
+export default CreateIdeaForm

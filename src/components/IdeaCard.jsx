@@ -1,49 +1,69 @@
 import React from 'react';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { voteForIdea } from '../api';
 import CategoryTag from './CategoryTag';
 
-const IdeaCard = ({ idea, handleVote }) => {
-  const getCardStyle = () => {
-    if (idea.id === 2) return 'bg-green-200';
-    if (idea.id === 3) return 'bg-red-300';
-    return 'bg-gray-50';
+const IdeaCard = ({ idea }) => {
+  const navigate = useNavigate();
+  const [isVoting, setIsVoting] = React.useState(false);
+
+  const handleVote = async (e, voteType) => {
+    e.stopPropagation();
+    if (isVoting) return;
+    
+    setIsVoting(true);
+    try {
+      await voteForIdea(idea.id, voteType);
+    } catch (error) {
+      console.error('Error voting:', error);
+    } finally {
+      setIsVoting(false);
+    }
   };
 
-  // Format date to DD.MM.YYYY
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+    return new Date(dateString).toLocaleDateString('ru-RU');
   };
 
   return (
-    <div className={`idea-card ${getCardStyle()}`}>
-      <h2 className="text-xl font-bold mb-2">IDEA {idea.id}</h2>
+    <div 
+      className="bg-white rounded-lg p-6 mb-4 shadow-sm hover:shadow-md transition-all cursor-pointer"
+      onClick={() => navigate(`/idea/${idea.id}`)}
+    >
+      <div className="flex justify-between items-start mb-4">
+        <h2 className="text-xl font-bold">IDEA {idea.id}</h2>
+        <span className="text-sm text-gray-500">{formatDate(idea.createdAt)}</span>
+      </div>
+      
+      <p className="text-gray-700 mb-4">{idea.summary}</p>
       
       <div className="flex flex-wrap mb-4">
-        {idea.categories.map(category => (
+        {idea.categories?.map(category => (
           <CategoryTag key={category} category={category} />
         ))}
       </div>
       
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <button 
-            className="vote-button text-green-500"
-            onClick={() => handleVote(idea.id, 'up')}
-          >
-            <FaThumbsUp className="mr-1" /> {idea.upVotes}
-          </button>
-          <button 
-            className="vote-button text-red-500"
-            onClick={() => handleVote(idea.id, 'down')}
-          >
-            <FaThumbsDown className="mr-1" /> {idea.downVotes}
-          </button>
-        </div>
-        <div className="text-gray-500 text-sm">{formatDate(idea.date)}</div>
+      <div className="flex items-center space-x-4">
+        <button 
+          className={`flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-100 ${isVoting ? 'opacity-50' : ''}`}
+          onClick={(e) => handleVote(e, 'up')}
+          disabled={isVoting}
+        >
+          <FaThumbsUp className="text-green-500" />
+          <span className="text-gray-700">{idea.upVotes || 0}</span>
+        </button>
+        <button 
+          className={`flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-100 ${isVoting ? 'opacity-50' : ''}`}
+          onClick={(e) => handleVote(e, 'down')}
+          disabled={isVoting}
+        >
+          <FaThumbsDown className="text-red-500" />
+          <span className="text-gray-700">{idea.downVotes || 0}</span>
+        </button>
       </div>
     </div>
   );
 };
 
-export default IdeaCard;
+export default IdeaCard
