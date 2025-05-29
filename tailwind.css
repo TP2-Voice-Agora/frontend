@@ -1,23 +1,4 @@
-@tailwind components;
-@tailwind utilities;
-
-@layer components {
-  .all-\[unset\] {
-    all: unset;
-  }
-}
-
-:root {
-  --black: rgba(0, 0, 0, 1);
-  --light-themeblue: rgba(10, 132, 255, 1);
-  --light-themegreen: rgba(0, 255, 0, 1);
-  --light-themegrey: rgba(229, 229, 234, 1);
-  --light-themegreystroke: rgba(209, 209, 209, 1);
-  --light-themelightgrey: rgba(242, 242, 247, 1);
-  --light-themepuregreen: rgba(112, 193, 112, 1);
-  --light-themepurered: rgba(255, 107, 107, 1);
-  --white: rgba(255, 255, 255, 1);
-}
+/* styles/globals.css или index.css - ваш основной CSS файл для Tailwind */
 
 @tailwind base;
 @tailwind components;
@@ -25,7 +6,8 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* Переменные из вашей "shadcn/ui"-подобной темы */
+    --background: 0 0% 100%; /* Белый */
     --foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -37,7 +19,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
 
-    --card: transparent;
+    --card: transparent; /* У вас было transparent, это важно */
     --card-foreground: 222.2 47.4% 11.2%;
 
     --primary: 222.2 47.4% 11.2%;
@@ -55,9 +37,21 @@
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
+
+    /* Ваши кастомные переменные темы */
+    --black: rgba(0, 0, 0, 1);
+    --light-themeblue: rgba(10, 132, 255, 1);
+    --light-themegreen: rgba(0, 255, 0, 1);
+    --light-themegrey: rgba(229, 229, 234, 1);      /* Похож на #E5E5EA */
+    --light-themegreystroke: rgba(209, 209, 209, 1); /* Похож на #D1D1D1 */
+    --light-themelightgrey: rgba(242, 242, 247, 1);   /* Похож на #F2F2F7 (bg-gray-100 в Tailwind) */
+    --light-themepuregreen: rgba(112, 193, 112, 1);
+    --light-themepurered: rgba(255, 107, 107, 1);
+    --white: rgba(255, 255, 255, 1);
   }
 
   .dark {
+    /* Переменные из вашей "shadcn/ui"-подобной темы для темного режима */
     --background: 224 71% 4%;
     --foreground: 213 31% 91%;
 
@@ -73,7 +67,7 @@
     --border: 216 34% 17%;
     --input: 216 34% 17%;
 
-    --card: transparent;
+    --card: transparent; /* У вас было transparent */
     --card-foreground: 213 31% 91%;
 
     --primary: 210 40% 98%;
@@ -87,17 +81,38 @@
 
     --ring: 216 34% 17%;
 
-    --radius: 0.5rem;
+    /* --radius: 0.5rem; - уже определен в :root, не нужно дублировать */
+
+    /* Здесь можно переопределить ваши кастомные переменные для темной темы, если нужно */
+    /* Например:
+    --light-themeblue: rgba(другой синий для темной темы);
+    */
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  /* 
+    Стиль * { @apply border-border; } удален.
+    Если вам нужны рамки по умолчанию для каких-то элементов, 
+    лучше добавлять их более избирательно или через компоненты.
+    Например, для всех кнопок: button { @apply border-border; }
+  */
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    /* font-feature-settings: "rlig" 1, "calt" 1; - Это специфично для шрифта, оставьте, если нужно */
   }
+}
+
+@layer components {
+  .all-\[unset\] {
+    all: unset;
+  }
+
+  /* Здесь можно добавить другие кастомные компоненты, если они у вас есть */
+  /* Например:
+  .btn-custom {
+    @apply px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600;
+  }
+  */
 }

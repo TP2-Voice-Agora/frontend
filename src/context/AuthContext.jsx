@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const fetchUser = async (uid) => {
+    console.log('Fetching user', uid);
     try {
       const userData = await getUserByUID(uid);
       setUser(userData);
@@ -32,9 +33,10 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogin = async (email, password) => {
     try {
-      const { token, uid } = await login(email, password);
+      const {token, uid} = await login(email, password);
       localStorage.setItem('authToken', token);
       localStorage.setItem('userUID', uid);
+      console.log("Logged in:", uid);
       setIsAuthenticated(true);
       await fetchUser(uid);
     } catch (err) {
@@ -44,7 +46,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('userUID');
     setIsAuthenticated(false);
     setUser(null);
   };

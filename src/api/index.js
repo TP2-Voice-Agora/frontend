@@ -31,8 +31,10 @@ api.interceptors.response.use(
 
 export const login = async (email, password) => {
   const response = await api.post('/login', { email, password });
-  const { token, uid } = response.data;
-  return { token, uid };
+  console.log(response);
+  const token = response.data.Token;
+  const uid = response.data.Uid
+  return {token, uid};
 };
 
 export const getUserByUID = async (uid) => {
@@ -61,9 +63,13 @@ export const getComments = async (ideaUID) => {
 };
 
 export const createComment = async (ideaUID, commentText) => {
-  const response = await api.post(`/ideas/${ideaUID}/comments`, { commentText });
+  const response = await api.post('/comments', {
+    commentText,
+    ideaUID
+  });
   return response.data;
 };
+
 
 export const createReply = async ({ commentUID, replyText }) => {
   const response = await api.post('/replies', { commentUID, replyText });
@@ -87,5 +93,11 @@ export const createIdea = async (ideaData) => {
 
 export const register = async (registerData) => {
   const response = await api.post('/register', registerData);
+  return response.data;
+};
+
+export const getPositions = async () => {
+  const response = await api.get('/users/positions');
+  console.log(response);
   return response.data;
 };
