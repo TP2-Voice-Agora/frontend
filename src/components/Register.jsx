@@ -1,4 +1,3 @@
-// components/RegisterForm.jsx
 import React, { useState } from 'react';
 import { register } from '../api';
 
@@ -8,7 +7,7 @@ const RegisterForm = () => {
     name: '',
     surname: '',
     password: '',
-    positionID: 0, // или другой по умолчанию
+    positionID: 0,
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');

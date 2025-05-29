@@ -18,7 +18,7 @@ const ProfilePictureUploader = () => {
     setError(null);
     try {
       const data = await uploadProfilePicture(file);
-      setUploadedUrl(data.url || data); // зависит от API
+      setUploadedUrl(data.url || data);
     } catch (err) {
       setError('Ошибка загрузки файла');
     } finally {

@@ -1,4 +1,3 @@
-// components/IdeaList.jsx
 import React, { useState, useEffect } from 'react';
 import { getIdeas } from '../api';
 import IdeaCard from './IdeaCard';

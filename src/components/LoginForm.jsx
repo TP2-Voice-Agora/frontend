@@ -1,10 +1,8 @@
-// components/LoginForm.jsx
 import React, { useState } from 'react';
-import { login } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 const LoginForm = ({ onClose }) => {
-  const { login: authLogin } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,9 +13,7 @@ const LoginForm = ({ onClose }) => {
     setLoading(true);
     setError(null);
     try {
-      const token = await login(email, password);
-      // Обновляем контекст
-      authLogin(token);
+      await login(email, password);
       onClose();
     } catch (err) {
       setError('Неверный логин или пароль');
@@ -25,7 +21,6 @@ const LoginForm = ({ onClose }) => {
       setLoading(false);
     }
   };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-8 w-[400px] relative">

@@ -1,4 +1,3 @@
-// components/CreateIdeaForm.jsx
 import React, { useState, useEffect } from 'react';
 import { createIdea, getCategories, getStatuses } from '../api';
 import { useNavigate } from 'react-router-dom';

@@ -1,10 +1,9 @@
-// components/UserProfile.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // предполагаем, что UID передается через маршрут
+import { useParams } from 'react-router-dom';
 import { getUserByUID } from '../api';
 
 const UserProfile = () => {
-  const { uid } = useParams(); // получаем UID из URL
+  const { uid } = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getUserByUID, login } from '../api';
 
 const AuthContext = createContext(null);
 
@@ -7,36 +8,53 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Check for existing auth token in localStorage
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      setIsAuthenticated(true);
-      setUser({ role: 'admin' });
-      // You could also fetch user data here
+  const fetchUser = async (uid) => {
+    try {
+      const userData = await getUserByUID(uid);
+      setUser(userData);
+    } catch (err) {
+      console.error('Ошибка получения данных пользователя:', err);
     }
-    setLoading(false);
+  };
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const token = localStorage.getItem('authToken');
+      const uid = localStorage.getItem('userUID');
+      if (token && uid) {
+        setIsAuthenticated(true);
+        await fetchUser(uid);
+      }
+      setLoading(false);
+    };
+    initializeAuth();
   }, []);
 
-  const login = (token) => {
-  localStorage.setItem('authToken', token);
-  // Обновите состояние
-  setIsAuthenticated(true);
-  // Можно дополнительно получать и сохранять данные пользователя
-};
+  const handleLogin = async (email, password) => {
+    try {
+      const { token, uid } = await login(email, password);
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('userUID', uid);
+      setIsAuthenticated(true);
+      await fetchUser(uid);
+    } catch (err) {
+      console.error('Ошибка при логине:', err);
+    }
+  };
 
-const logout = () => {
-  localStorage.removeItem('authToken');
-  setIsAuthenticated(false);
-  setUser(null);
-};
+  const logout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userUID');
+    setIsAuthenticated(false);
+    setUser(null);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login: handleLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

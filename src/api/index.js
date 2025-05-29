@@ -4,187 +4,88 @@ const api = axios.create({
   baseURL: 'https://api.ffokildam.ru',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
   },
-  withCredentials: true
+  withCredentials: true,
 });
 
 api.interceptors.request.use(
-    config => {
-      const token = localStorage.getItem('authToken');
-      console.log('Interceptor token:', token);
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    error => Promise.reject(error)
+  (config) => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 api.interceptors.response.use(
-    response => response,
-    error => {
-      if (!error.response) {
-        console.error('Network error:', error);
-        return Promise.reject(new Error('Network error. Please check your connection.'));
-      }
-
-      console.error('API Error:', {
-        status: error.response?.status,
-        data: error.response?.data,
-        config: error.config
-      });
-
-      return Promise.reject(error);
-    }
+  (response) => response,
+  (error) => {
+    console.error('API Error:', error);
+    return Promise.reject(error);
+  }
 );
 
 
 export const login = async (email, password) => {
-  try {
-    const response = await api.post('/login', { email, password });
-    const token = response.data;
-    localStorage.setItem('authToken', token);
-    console.log('Saved token:', token);
-    console.log('Stored token:', localStorage.getItem('authToken'));
-    return { token };
-  } catch (error) {
-    console.error('Login error:', error);
-    throw new Error(error.response?.data?.message || 'Failed to login');
-  }
-};
-
-console.log('Текущий токен:', localStorage.getItem('authToken'));
-export const getIdeas = async () => {
-  try {
-    const response = await api.get('/ideas');
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch ideas:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch ideas');
-  }
-};
-
-export const getIdeaByUID = async (uid) => {
-  try {
-    const response = await api.get(`/ideas/${uid}`);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to get idea by UID:', error);
-    throw new Error(error.response?.data?.message || 'Failed to get idea by UID');
-  }
-};
-
-export const createIdea = async (ideaData) => {
-  try {
-    const data = {
-      ...ideaData,
-    };
-    console.log('Creating idea:', data);
-    const response = await api.post('/ideas', data);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to create idea:', error);
-    throw new Error(error.response?.data?.message || 'Failed to create idea');
-  }
-};
-
-export const voteForIdea = async (ideaId, voteType) => {
-  try {
-    const response = await api.post(`/ideas/${ideaId}/vote`, { voteType });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to vote:', error);
-    throw new Error(error.response?.data?.message || 'Failed to vote for idea');
-  }
-};
-/*p */
-export const getCategories = async () => {
-  try {
-    const response = await api.get('/ideas/categories');
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch categories:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch categories');
-  }
-};
-
-export const getStatuses = async () => {
-  try {
-    const response = await api.get('/ideas/statuses');
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch statuses:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch statuses');
-  }
-};
-
-export const getComments = async (ideaId) => {
-  try {
-    const response = await api.get(`/ideas/${ideaId}/comments`);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch comments:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch comments');
-  }
-};
-
-export const createComment = async (ideaId, text) => {
-  try {
-    const response = await api.post(`/ideas/${ideaId}/comments`, { text });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to create comment:', error);
-    throw new Error(error.response?.data?.message || 'Failed to create comment');
-  }
-};
-
-export const createReply = async ({ commentUID, replyText }) => {
-  try {
-    const response = await api.post('/replies', {
-      commentUID,
-      replyText
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to create reply:', error);
-    throw new Error(error.response?.data?.message || 'Failed to create reply');
-  }
-};
-
-export const register = async (registerData) => {
-  try {
-    const response = await api.post('/register', registerData);
-    return response.data; // обычно это сообщение или подтверждение
-  } catch (error) {
-    console.error('Failed to register:', error);
-    throw new Error(error.response?.data || 'Failed to register');
-  }
-};
-
-export const uploadProfilePicture = async (file) => {
-  const formData = new FormData();
-  formData.append('profile_picture', file);
-
-  try {
-    const response = await api.post('/users/pfp', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    return response.data; // возвращает URL или объект
-  } catch (error) {
-    console.error('Failed to upload profile picture:', error);
-    throw new Error(error.response?.data || 'Failed to upload profile picture');
-  }
+  const response = await api.post('/login', { email, password });
+  const { token, uid } = response.data;
+  return { token, uid };
 };
 
 export const getUserByUID = async (uid) => {
-  try {
-    const response = await api.get(`/users/${uid}`);
-    return response.data; // объект пользователя
-  } catch (error) {
-    console.error('Failed to get user by UID:', error);
-    throw new Error(error.response?.data || 'Failed to get user');
-  }
+  const response = await api.get(`/users/${uid}`);
+  return response.data;
+};
+
+export const getIdeas = async () => {
+  const response = await api.get('/ideas');
+  return response.data;
+};
+
+export const getIdeaByUID = async (uid) => {
+  const response = await api.get(`/ideas/${uid}`);
+  return response.data;
+};
+
+export const voteForIdea = async (ideaId, voteType) => {
+  const response = await api.post(`/ideas/${ideaId}/vote`, { voteType });
+  return response.data;
+};
+
+export const getComments = async (ideaUID) => {
+  const response = await api.get(`/ideas/${ideaUID}/comments`);
+  return response.data;
+};
+
+export const createComment = async (ideaUID, commentText) => {
+  const response = await api.post(`/ideas/${ideaUID}/comments`, { commentText });
+  return response.data;
+};
+
+export const createReply = async ({ commentUID, replyText }) => {
+  const response = await api.post('/replies', { commentUID, replyText });
+  return response.data;
+};
+
+export const getCategories = async () => {
+  const response = await api.get('/ideas/categories');
+  return response.data;
+};
+
+export const getStatuses = async () => {
+  const response = await api.get('/ideas/statuses');
+  return response.data;
+};
+
+export const createIdea = async (ideaData) => {
+  const response = await api.post('/ideas', ideaData);
+  return response.data;
+};
+
+export const register = async (registerData) => {
+  const response = await api.post('/register', registerData);
+  return response.data;
 };
