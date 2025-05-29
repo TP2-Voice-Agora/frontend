@@ -52,8 +52,19 @@ export const getIdeaByUID = async (uid) => {
   return response.data;
 };
 
-export const voteForIdea = async (ideaId, voteType) => {
-  const response = await api.post(`/ideas/${ideaId}/vote`, { voteType });
+export const likeIdea = async (ideaId) => {
+  const response = await api.post(`/ideas/${ideaId}/like`);
+  if (response.data !== 'ok') {
+    throw new Error('Failed to like the idea');
+  }
+  return response.data;
+};
+
+export const dislikeIdea = async (ideaId) => {
+  const response = await api.post(`/ideas/${ideaId}/dislike`);
+  if (response.data !== 'ok') {
+    throw new Error('Failed to dislike the idea');
+  }
   return response.data;
 };
 
