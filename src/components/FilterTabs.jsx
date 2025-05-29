@@ -1,5 +1,3 @@
-import React from 'react';
-
 const FilterTabs = ({ activeTab, setActiveTab }) => {
   const tabs = [
     { id: 'all', label: 'Все идеи', color: '#0A84FF' },
@@ -9,7 +7,7 @@ const FilterTabs = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="flex space-x-8 px-6 max-w-full overflow-x-auto">
+    <div className="flex space-x-4 overflow-x-auto max-w-full min-w-0">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
 
@@ -17,7 +15,7 @@ const FilterTabs = ({ activeTab, setActiveTab }) => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className="min-w-[150px] h-[40px] rounded-md text-[15px] flex items-center justify-center transition-all duration-200 whitespace-nowrap"
+            className="min-w-[150px] h-[40px] rounded-md text-[15px] flex items-center justify-center transition-all duration-200 whitespace-nowrap flex-shrink-0"
             style={{
               fontFamily: 'Inter, sans-serif',
               fontWeight: 400,
@@ -34,5 +32,3 @@ const FilterTabs = ({ activeTab, setActiveTab }) => {
     </div>
   );
 };
-
-export default FilterTabs;

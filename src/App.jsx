@@ -23,11 +23,9 @@ const AppContent = () => {
     location.pathname.startsWith('/idea/') || location.pathname.startsWith('/user/');
 
   const MainPage = () => (
-    <div className="flex flex-col h-full">
-      <div
-        className="flex items-center justify-between px-[5px] py-[5px]"
-        style={{ backgroundColor: '#F2F2F7' }}
-      >
+    <div className="flex flex-col flex-grow min-h-0">
+      {/* Фильтры и сортировка */}
+      <div className="flex items-center justify-between px-6 py-2 shrink-0">
         <FilterTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <SortControls
           sortBy={sortBy}
@@ -36,31 +34,35 @@ const AppContent = () => {
           setSelectedCategories={setSelectedCategories}
         />
       </div>
-      <div className="mt-[20px]">
+
+      {/* Список идей, занимает оставшуюся высоту */}
+      <div className="mt-5 flex-grow min-h-0 overflow-auto px-6">
         <IdeaList />
       </div>
     </div>
   );
 
   return (
-    <div className={`min-h-screen ${!isSpecialPage ? 'bg-gray-50' : ''}`}>
-      <div className={!isSpecialPage ? 'container mx-auto' : ''}>
+    <div className={`flex flex-col min-h-screen bg-[#F2F2F7]`}>
+      <div className={!isSpecialPage ? 'container mx-auto flex flex-col flex-grow min-h-0' : 'flex flex-col flex-grow min-h-0'}>
         <Header onProfileClick={() => setShowLoginForm(true)} />
-        <Routes>
-          <Route path="/user/:uid" element={<UserProfile />} />
-          <Route
-            path="/register"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <RegisterForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/" element={<MainPage />} />
-          <Route path="/create" element={<CreateIdeaForm />} />
-          <Route path="/idea/:id" element={<IdeaDetail />} />
-          <Route path="/profile" element={<UserProfile />} />
-        </Routes>
+        <div className="flex-grow flex flex-col min-h-0">
+          <Routes>
+            <Route path="/user/:uid" element={<UserProfile />} />
+            <Route
+              path="/register"
+              element={
+                <ProtectedRoute adminOnly={true}>
+                  <RegisterForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/" element={<MainPage />} />
+            <Route path="/create" element={<CreateIdeaForm />} />
+            <Route path="/idea/:id" element={<IdeaDetail />} />
+            <Route path="/profile" element={<UserProfile />} />
+          </Routes>
+        </div>
         {showLoginForm && <LoginForm onClose={() => setShowLoginForm(false)} />}
       </div>
     </div>
