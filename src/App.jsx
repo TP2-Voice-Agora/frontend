@@ -24,7 +24,6 @@ const AppContent = () => {
 
   const MainPage = () => (
     <div className="flex flex-col flex-grow min-h-0">
-      {/* Фильтры и сортировка */}
       <div className="flex items-center justify-between px-6 py-2 shrink-0">
         <FilterTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <SortControls
@@ -34,8 +33,6 @@ const AppContent = () => {
           setSelectedCategories={setSelectedCategories}
         />
       </div>
-
-      {/* Список идей, занимает оставшуюся высоту */}
       <div className="mt-5 flex-grow min-h-0 overflow-auto px-6">
         <IdeaList />
       </div>
