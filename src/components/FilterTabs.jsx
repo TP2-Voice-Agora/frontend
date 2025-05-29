@@ -2,27 +2,35 @@ import React from 'react';
 
 const FilterTabs = ({ activeTab, setActiveTab }) => {
   const tabs = [
-    { id: 'all', label: 'Все идеи' },
-    { id: 'approved', label: 'Одобренные идеи' },
-    { id: 'rejected', label: 'Отклоненные идеи' },
-    { id: 'neutral', label: 'Нейтральные идеи' }
+    { id: 'all', label: 'Все идеи', color: '#0A84FF' },
+    { id: 'approved', label: 'Одобренные идеи', color: '#70C170' },
+    { id: 'rejected', label: 'Отклоненные идеи', color: '#FF6B6B' },
+    { id: 'neutral', label: 'Нейтральные идеи', color: '#D1D1D1' }
   ];
 
   return (
-    <div className="flex space-x-2">
-      {tabs.map(tab => (
-        <button
-          key={tab.id}
-          className={`px-4 py-2 rounded-md text-sm transition-all duration-200 ${
-            activeTab === tab.id 
-              ? 'bg-blue-500 text-white'
-              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
-          }`}
-          onClick={() => setActiveTab(tab.id)}
-        >
-          {tab.label}
-        </button>
-      ))}
+    <div className="flex space-x-8 px-6 max-w-full overflow-x-auto">
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+
+        return (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className="min-w-[150px] h-[40px] rounded-md text-[15px] flex items-center justify-center transition-all duration-200 whitespace-nowrap"
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 400,
+              backgroundColor: isActive ? tab.color : '#FFFFFF',
+              color: isActive ? '#FFFFFF' : '#000000',
+              border: `1px solid ${tab.color}`
+            }}
+            type="button"
+          >
+            {tab.label}
+          </button>
+        );
+      })}
     </div>
   );
 };
