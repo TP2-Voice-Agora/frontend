@@ -24,16 +24,13 @@ const Header = ({ onProfileClick }) => {
     };
 
     return (
-        <header className="flex justify-between items-center py-4 px-6 bg-[#E5E5EA]">
-            {/* LOGO */}
+        <header className="flex justify-between items-center py-4 px-6 bg-[#F2F2F7]">
             <div
                 className="bg-white text-black px-8 py-3 rounded-lg font-semibold cursor-pointer shadow-sm"
                 onClick={() => navigate('/')}
             >
                 LOGO
             </div>
-
-            {/* Right side buttons */}
             <div className="flex items-center space-x-4">
                 <button
                     className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium"
@@ -52,8 +49,6 @@ const Header = ({ onProfileClick }) => {
                 >
                     {isAuthenticated ? 'Профиль' : 'Войти'}
                 </button>
-
-                {/* Временная кнопка для выхода */}
                 {isAuthenticated && (
                     <button
                         className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium"

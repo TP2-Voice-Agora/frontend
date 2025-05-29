@@ -63,7 +63,6 @@ const SortControls = ({ sortBy, setSortBy, selectedCategories, setSelectedCatego
       </span>
 
       <div className="flex flex-wrap gap-4">
-        {/* Кнопка сортировки */}
         <div className="relative" ref={dateDropdownRef}>
           <button
             className="min-w-[200px] h-[40px] flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-all px-[22px] py-[11px]"
@@ -111,6 +110,7 @@ const SortControls = ({ sortBy, setSortBy, selectedCategories, setSelectedCatego
           )}
         </div>
 
+        {/* Кнопка категорий */}
         <div className="relative" ref={categoryDropdownRef}>
           <button
             className="min-w-[200px] h-[40px] flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-all px-[22px] py-[11px]"
