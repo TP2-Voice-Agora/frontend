@@ -12,22 +12,24 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('authToken');
     if (token) {
       setIsAuthenticated(true);
+      setUser({ role: 'admin' });
       // You could also fetch user data here
     }
     setLoading(false);
   }, []);
 
-  const login = (token, userData) => {
-    localStorage.setItem('authToken', token);
-    setIsAuthenticated(true);
-    setUser(userData);
-  };
+  const login = (token) => {
+  localStorage.setItem('authToken', token);
+  // Обновите состояние
+  setIsAuthenticated(true);
+  // Можно дополнительно получать и сохранять данные пользователя
+};
 
-  const logout = () => {
-    localStorage.removeItem('authToken');
-    setIsAuthenticated(false);
-    setUser(null);
-  };
+const logout = () => {
+  localStorage.removeItem('authToken');
+  setIsAuthenticated(false);
+  setUser(null);
+};
 
   if (loading) {
     return <div>Loading...</div>;

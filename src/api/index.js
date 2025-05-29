@@ -54,7 +54,7 @@ export const login = async (email, password) => {
   }
 };
 
-
+console.log('Текущий токен:', localStorage.getItem('authToken'));
 export const getIdeas = async () => {
   try {
     const response = await api.get('/ideas');
@@ -65,13 +65,13 @@ export const getIdeas = async () => {
   }
 };
 
-export const getIdeaById = async (id) => {
+export const getIdeaByUID = async (uid) => {
   try {
-    const response = await api.get(`/ideas/${id}`);
+    const response = await api.get(`/ideas/${uid}`);
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch idea:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch idea details');
+    console.error('Failed to get idea by UID:', error);
+    throw new Error(error.response?.data?.message || 'Failed to get idea by UID');
   }
 };
 
@@ -139,12 +139,52 @@ export const createComment = async (ideaId, text) => {
   }
 };
 
-export const createReply = async (commentId, text) => {
+export const createReply = async ({ commentUID, replyText }) => {
   try {
-    const response = await api.post(`/comments/${commentId}/replies`, { text });
+    const response = await api.post('/replies', {
+      commentUID,
+      replyText
+    });
     return response.data;
   } catch (error) {
     console.error('Failed to create reply:', error);
     throw new Error(error.response?.data?.message || 'Failed to create reply');
+  }
+};
+
+export const register = async (registerData) => {
+  try {
+    const response = await api.post('/register', registerData);
+    return response.data; // обычно это сообщение или подтверждение
+  } catch (error) {
+    console.error('Failed to register:', error);
+    throw new Error(error.response?.data || 'Failed to register');
+  }
+};
+
+export const uploadProfilePicture = async (file) => {
+  const formData = new FormData();
+  formData.append('profile_picture', file);
+
+  try {
+    const response = await api.post('/users/pfp', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data; // возвращает URL или объект
+  } catch (error) {
+    console.error('Failed to upload profile picture:', error);
+    throw new Error(error.response?.data || 'Failed to upload profile picture');
+  }
+};
+
+export const getUserByUID = async (uid) => {
+  try {
+    const response = await api.get(`/users/${uid}`);
+    return response.data; // объект пользователя
+  } catch (error) {
+    console.error('Failed to get user by UID:', error);
+    throw new Error(error.response?.data || 'Failed to get user');
   }
 };
