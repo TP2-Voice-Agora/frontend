@@ -226,7 +226,7 @@ const IdeaDetail = () => {
 
   return (
       <div className="bg-[#EAEAF4] min-h-[calc(100vh-4rem)] font-sans">
-        <main className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <main className="w-full px-[20px] pt-[20px] pb-[20px] sm:px-[24px] sm:pt-[24px] sm:pb-[24px] lg:px-[32px] lg:pt-[32px] lg:pb-[32px] box-border">
           <div className="flex flex-col lg:flex-row lg:space-x-8">
             {/* Left Column */}
             <div className="lg:w-2/3 space-y-6">
