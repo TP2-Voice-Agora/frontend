@@ -6,6 +6,9 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   base: "./",
+  build: {
+    outDir: "build",
+  },
   css: {
     postcss: {
       plugins: [tailwind()],
