@@ -16,7 +16,7 @@ const AppContent = () => {
   const location = useLocation();
   const [showLoginForm, setShowLoginForm] = React.useState(false);
   const [showCreateIdeaModal, setShowCreateIdeaModal] = React.useState(false);
-  const [activeTab, setActiveTab] = React.useState('all');
+  const [activeTab, setActiveTab] = React.useState('3');
   const [sortBy, setSortBy] = React.useState('date');
   const [selectedCategories, setSelectedCategories] = React.useState([]);
 
