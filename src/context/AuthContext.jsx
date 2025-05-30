@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const fetchUser = async (uid) => {
-    console.log('Fetching user', uid);
     try {
       const userData = await getUserByUID(uid);
       setUser(userData);

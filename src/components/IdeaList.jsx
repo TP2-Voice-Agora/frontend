@@ -13,7 +13,11 @@ const IdeaList = () => {
         const data = await getIdeas();
         setIdeas(data);
       } catch (err) {
-        setError('Не удалось загрузить идеи');
+        if(err.status === 401) {
+          setError('Войдите в аккаунт');
+        } else{
+          setError('Не удалось загрузить идеи');
+        }
         console.error('Error fetching ideas:', err);
       } finally {
         setLoading(false);
@@ -35,16 +39,8 @@ const IdeaList = () => {
               <div className="text-center my-6 text-red-500">{error}</div>
           )}
 
-          {!loading && !error && ideas.length === 0 && (
+          {!loading && !error && ideas === null && (
               <div className="text-center my-6 text-gray-500">Идеи не найдены</div>
-          )}
-
-          {!loading && !error && (
-              ideas.map((idea, index) => (
-                  <div key={idea.ideaUID} className={index !== ideas.length - 1 ? 'mb-0.5' : ''}>
-                    <IdeaCard idea={idea} />
-                  </div>
-              ))
           )}
         </div>
     );
@@ -65,8 +61,8 @@ const IdeaList = () => {
   return (
       <div className="flex flex-col px-4">
         {ideas.map((idea, index) => (
-            <div key={idea.ideaUID} className={index !== ideas.length - 1 ? 'mb-0.5' : ''}>
-              <IdeaCard idea={idea} />
+            <div key={index} className={index !== ideas.length - 1 ? 'mb-0.5' : ''}>
+              <IdeaCard  idea={idea} />
             </div>
         ))}
       </div>
