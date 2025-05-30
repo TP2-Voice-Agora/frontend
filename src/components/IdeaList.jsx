@@ -36,7 +36,7 @@ const IdeaList = () => {
     );
   }
 
-  if (ideas.length === 0) {
+  if (ideas === null) {
     return (
         <div className="text-center my-6 text-gray-500">Идеи не найдены</div>
     );

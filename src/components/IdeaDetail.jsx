@@ -161,8 +161,24 @@ const IdeaDetail = () => {
   if (error) return <div className="p-6 m-auto mt-10 max-w-lg text-center text-red-700 bg-red-100 border border-red-400 rounded-lg shadow">{error}</div>;
   if (!ideaDetails) return <div className="p-6 m-auto mt-10 max-w-lg text-center text-gray-600 bg-gray-100 border border-gray-300 rounded-lg shadow">Идея не найдена.</div>;
 
-  const currentCategoryName = categoriesMap[ideaDetails.CategoryID] || 'Не определена';
-  const currentStatusName = statusesMap[ideaDetails.StatusID] || 'Не определен';
+  const categoryNamesMap = {
+    0: 'Срочно',
+    1: 'Бюджет',
+    2: 'Развитие',
+    3: 'Дизайн/Брендинг',
+    4: 'Эксперимент',
+    5: 'Маркетинг',
+    6: 'Производство',
+  };
+
+  const currentCategoryName = categoryNamesMap[ideaDetails.CategoryID] ?? 'Не определена';
+  const statusNamesMap = {
+    0: 'Нейтральная',
+    1: 'Одобренная',
+    2: 'Отклоненная',
+  };
+
+  const currentStatusName = statusNamesMap[ideaDetails.StatusID] ?? 'Не определен';
   const authorFullName = ideaAuthorDetails ? `${ideaAuthorDetails.Name || ''} ${ideaAuthorDetails.Surname || ''}`.trim() : 'Неизвестный автор';
 
   const categoryTags = [currentCategoryName];
@@ -241,39 +257,33 @@ const IdeaDetail = () => {
               <div className="bg-white shadow-lg rounded-xl p-6 sticky top-8"> {/* Adjusted sticky top if global header is present */}
                 <h2 className="text-xl font-bold text-gray-800 mb-5">Информация об идее</h2>
                 <div className="space-y-3 text-sm">
-                  <p><strong className="font-semibold text-gray-600">Автор:</strong> <span className="text-gray-800">{authorFullName}</span></p>
-                  <p><strong className="font-semibold text-gray-600">Дата создания:</strong> <span className="text-gray-800">{formatDate(ideaDetails.CreationDate).split(',')[0]}</span></p>
-                  <p><strong className="font-semibold text-gray-600">Статус идеи:</strong> <span className="text-gray-800">{currentStatusName}</span></p>
+                  <p><strong className="font-semibold text-gray-600">Автор:</strong> <span
+                      className="text-gray-800">{authorFullName}</span></p>
+                  <p><strong className="font-semibold text-gray-600">Дата создания:</strong> <span
+                      className="text-gray-800">{formatDate(ideaDetails.CreationDate).split(',')[0]}</span></p>
+                  <p><strong className="font-semibold text-gray-600">Статус идеи:</strong> <span
+                      className="text-gray-800">{currentStatusName}</span></p>
 
                   <div className="flex items-center pt-1">
                   <span className="flex items-center mr-4 text-green-600">
-                    <img src="/like.svg" alt="Like" className="h-5 w-5 mr-1" />
+                    <img src="/like.svg" alt="Like" className="h-5 w-5 mr-1"/>
                     {ideaDetails.LikeCount}
                   </span>
                     <span className="flex items-center text-red-600">
-                    <img src="/dislike.svg" alt="Dislike" className="h-5 w-5 mr-1" />
+                    <img src="/dislike.svg" alt="Dislike" className="h-5 w-5 mr-1"/>
                       {ideaDetails.DislikeCount}
                   </span>
                   </div>
 
                   <div className="pt-2">
-                    <strong className="font-semibold text-gray-600 block mb-2">Категории:</strong>
+                    <strong className="font-semibold text-gray-600 block mb-2">Категория:</strong>
                     <div className="flex flex-wrap gap-2">
-                      {categoryTags.map(tag => (
-                          <span key={tag} className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">
-                        {tag}
+                      <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">
+                        {currentCategoryName}
                       </span>
-                      ))}
-                      {['Бюджет', 'Креатив', 'Долгосрочное', 'Эксперимент', 'Перспективное'].map(tag => {
-                        if (tag !== currentCategoryName && ['Бюджет', 'Креатив', 'Долгосрочное', 'Эксперимент', 'Перспективное'].includes(tag)) {
-                          return (<span key={tag} className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">
-                            {tag}
-                          </span>)
-                        }
-                        return null;
-                      })}
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>

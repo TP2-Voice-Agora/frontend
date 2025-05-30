@@ -7,7 +7,7 @@ const FilterTabs = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="flex space-x-4 overflow-x-auto max-w-full min-w-0">
+    <div className="flex space-x-4 max-w-full min-w-0">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         return (

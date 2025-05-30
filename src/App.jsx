@@ -23,24 +23,27 @@ const AppContent = () => {
   const isSpecialPage = ['/register'].includes(location.pathname) ||
     location.pathname.startsWith('/idea/') || location.pathname.startsWith('/user/');
 
-  const MainPage = () => (
-    <div className="flex flex-col flex-grow min-h-0">
-      <div className="flex items-center justify-between px-6 py-2 shrink-0">
-        <FilterTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-        <SortControls
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          selectedCategories={selectedCategories}
-          setSelectedCategories={setSelectedCategories}
-        />
-      </div>
-      <div className="mt-5 flex-grow min-h-0 overflow-auto px-6">
-        <IdeaList />
-      </div>
-    </div>
-  );
+    const MainPage = () => (
+        <div className="flex flex-col flex-grow min-h-0">
+            <div className="flex justify-between items-center px-6 py-2 shrink-0">
+                <FilterTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+                <div className="flex justify-end flex-grow">
+                    <SortControls
+                        sortBy={sortBy}
+                        setSortBy={setSortBy}
+                        selectedCategories={selectedCategories}
+                        setSelectedCategories={setSelectedCategories}
+                    />
+                </div>
+            </div>
+            <div className="mt-5 flex-grow min-h-0 overflow-auto px-6">
+                <IdeaList />
+            </div>
+        </div>
+    );
 
-  return (
+
+    return (
     <div className={`flex flex-col min-h-screen bg-[#F2F2F7]`}>
       <div className={!isSpecialPage ? 'container mx-auto flex flex-col flex-grow min-h-0' : 'flex flex-col flex-grow min-h-0'}>
         <Header

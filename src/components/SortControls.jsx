@@ -47,122 +47,123 @@ const SortControls = ({ sortBy, setSortBy, selectedCategories, setSelectedCatego
   ];
 
   const selectedSortLabel =
-    sortOptions.find((option) => option.key === sortBy)?.label || 'Сортировка';
+      sortOptions.find((option) => option.key === sortBy)?.label || 'Сортировка';
 
   return (
-    <div className="flex items-center justify-between px-6 flex-wrap gap-4">
-      <span
-        className="text-[16px] whitespace-nowrap"
-        style={{
-          fontFamily: 'Inter, sans-serif',
-          fontWeight: 700,
-          color: '#0A84FF',
-        }}
-      >
+      <div className="flex items-center justify-between gap-4 whitespace-nowrap"> {/* MODIFIED LINE: removed px-6 */}
+        <span
+            className="text-[16px]"
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 700,
+              color: '#0A84FF',
+            }}
+        >
         Сортировать по:
       </span>
 
-      <div className="flex flex-wrap gap-4">
-        <div className="relative" ref={dateDropdownRef}>
-          <button
-            className="min-w-[200px] h-[40px] flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-all px-[22px] py-[11px]"
-            onClick={() => setIsDateDropdownOpen(!isDateDropdownOpen)}
-            type="button"
-          >
-            <div className="flex items-center gap-[5px]">
-              <img
-                src="/public/iconamoon-arrow-up-1-thin.svg"
-                alt="arrow-up"
-                className="w-4 h-4 flex-shrink-0"
-              />
-              <span
-                className="text-[14px] whitespace-nowrap"
-                style={{
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: 500,
-                  color: '#0A84FF',
-                }}
-              >
+        <div className="flex gap-4">
+          {/* Сортировка по дате */}
+          <div className="relative" ref={dateDropdownRef}>
+            <button
+                className="min-w-[180px] h-[40px] flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-all px-[22px] py-[11px]"
+                onClick={() => setIsDateDropdownOpen(!isDateDropdownOpen)}
+                type="button"
+            >
+              <div className="flex items-center gap-[5px]">
+                <img
+                    src="/public/iconamoon-arrow-up-1-thin.svg"
+                    alt="arrow-up"
+                    className="w-4 h-4 flex-shrink-0"
+                />
+                <span
+                    className="text-[14px]"
+                    style={{
+                      fontFamily: 'Inter, sans-serif',
+                      fontWeight: 500,
+                      color: '#0A84FF',
+                    }}
+                >
                 {selectedSortLabel}
               </span>
-              <FaChevronDown
-                className={`text-blue-500 w-4 h-4 flex-shrink-0 transition-transform duration-200 ${
-                  isDateDropdownOpen ? 'rotate-180' : ''
-                }`}
-              />
-            </div>
-          </button>
-          {isDateDropdownOpen && (
-            <div className="absolute top-full mt-1 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 w-52">
-              {sortOptions.map((option) => (
-                <div
-                  key={option.key}
-                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                  onClick={() => {
-                    setSortBy(option.key);
-                    setIsDateDropdownOpen(false);
-                  }}
-                >
-                  {option.label}
+                <FaChevronDown
+                    className={`text-blue-500 w-4 h-4 flex-shrink-0 transition-transform duration-200 ${
+                        isDateDropdownOpen ? 'rotate-180' : ''
+                    }`}
+                />
+              </div>
+            </button>
+            {isDateDropdownOpen && (
+                <div className="absolute top-full mt-1 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 w-52">
+                  {sortOptions.map((option) => (
+                      <div
+                          key={option.key}
+                          className="px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                          onClick={() => {
+                            setSortBy(option.key);
+                            setIsDateDropdownOpen(false);
+                          }}
+                      >
+                        {option.label}
+                      </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        {/* Кнопка категорий */}
-        <div className="relative" ref={categoryDropdownRef}>
-          <button
-            className="min-w-[200px] h-[40px] flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-all px-[22px] py-[11px]"
-            onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-            type="button"
-          >
-            <div className="flex items-center gap-[5px]">
-              <img
-                src="/public/iconamoon-arrow-up-1-thin.svg"
-                alt="arrow-up"
-                className="w-4 h-4"
-              />
-              <span
-                className="text-[15px] whitespace-nowrap"
-                style={{
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: 500,
-                  color: '#0A84FF',
-                }}
-              >
+          {/* Кнопка категорий */}
+          <div className="relative" ref={categoryDropdownRef}>
+            <button
+                className="min-w-[200px] h-[40px] flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-all px-[22px] py-[11px]"
+                onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                type="button"
+            >
+              <div className="flex items-center gap-[5px]">
+                <img
+                    src="/public/iconamoon-arrow-up-1-thin.svg"
+                    alt="arrow-up"
+                    className="w-4 h-4"
+                />
+                <span
+                    className="text-[15px]"
+                    style={{
+                      fontFamily: 'Inter, sans-serif',
+                      fontWeight: 500,
+                      color: '#0A84FF',
+                    }}
+                >
                 Категории
               </span>
-              <FaChevronDown
-                className={`text-blue-500 w-4 h-4 transition-transform duration-200 ${
-                  isCategoryDropdownOpen ? 'rotate-180' : ''
-                }`}
-              />
-            </div>
-          </button>
-          {isCategoryDropdownOpen && (
-            <div className="absolute top-full mt-1 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 w-52 max-h-64 overflow-auto">
-              {categories.map((category) => (
-                <div
-                  key={category}
-                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center"
-                  onClick={() => toggleCategory(category)}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedCategories.includes(category)}
-                    onChange={() => {}}
-                    className="mr-2"
-                    readOnly
-                  />
-                  {category}
+                <FaChevronDown
+                    className={`text-blue-500 w-4 h-4 transition-transform duration-200 ${
+                        isCategoryDropdownOpen ? 'rotate-180' : ''
+                    }`}
+                />
+              </div>
+            </button>
+            {isCategoryDropdownOpen && (
+                <div className="absolute top-full mt-1 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 w-52 max-h-64 overflow-auto">
+                  {categories.map((category) => (
+                      <div
+                          key={category}
+                          className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center"
+                          onClick={() => toggleCategory(category)}
+                      >
+                        <input
+                            type="checkbox"
+                            checked={selectedCategories.includes(category)}
+                            onChange={() => {}}
+                            className="mr-2"
+                            readOnly
+                        />
+                        {category}
+                      </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

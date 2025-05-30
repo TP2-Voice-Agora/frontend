@@ -25,10 +25,10 @@ const Header = ({ onProfileClick, onCreateIdeaClick }) => {
   return (
     <header className="flex justify-between items-center py-4 px-6 bg-[#F2F2F7]">
       <div
-        className="bg-white text-black px-8 py-3 rounded-lg font-semibold cursor-pointer shadow-sm"
+        className="bg-white text-black px-6 py-3 rounded-lg font-semibold cursor-pointer shadow-sm"
         onClick={() => window.location.href = '/'}
       >
-        LOGO
+        Голос каждого
       </div>
       <div className="flex items-center space-x-4">
         <button

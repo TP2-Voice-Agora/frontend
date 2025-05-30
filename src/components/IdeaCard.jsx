@@ -4,6 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import { likeIdea, dislikeIdea } from '../api';
 import CategoryTag from './CategoryTag';
 
+// Сопоставление ID и названий категорий
+const categoryMap = {
+  0: 'Срочно',
+  1: 'Бюджет',
+  2: 'Развитие',
+  3: 'Дизайн/Брендинг',
+  4: 'Эксперимент',
+  5: 'Маркетинг',
+  6: 'Производство'
+};
+
 const IdeaCard = ({ idea }) => {
   const navigate = useNavigate();
   const [isVoting, setIsVoting] = React.useState(false);
@@ -39,26 +50,44 @@ const IdeaCard = ({ idea }) => {
     return new Date(dateString).toLocaleDateString('ru-RU');
   };
 
+  // Получение названия категории из ID
+  const categoryName = categoryMap[idea.CategoryID] || 'Неизвестно';
+
   return (
       <div
           className="bg-white rounded-lg p-6 mb-4 shadow-sm hover:shadow-md transition-all cursor-pointer relative"
           onClick={() => navigate(`/idea/${idea.IdeaUID}`)}
       >
-        <h2 className="text-xl font-bold mb-4">{idea.Name}</h2>
+        <h2 className="text-2xl font-bold mb-4">{idea.Name}</h2>
 
-        <div className="flex flex-wrap mb-12">
-          {idea.categories?.map(category => (
-              <CategoryTag key={category} category={category}/>
-          ))}
+        <div className="pt-2">
+          <div className="flex flex-wrap gap-2">
+            {idea.categories?.map((category) => (
+                <span
+                    key={category}
+                    className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium"
+                >
+              {category}
+            </span>
+            ))}
+            {categoryName && (
+                <span
+                    key={idea.CategoryID}
+                    className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium"
+                >
+              {categoryName}
+            </span>
+            )}
+          </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 mt-4">
           <button
               className={`flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-100 ${isVoting ? 'opacity-50' : ''}`}
               onClick={(e) => handleVote(e, 'up')}
               disabled={isVoting}
           >
-            <FaThumbsUp className="text-green-500"/>
+            <FaThumbsUp className="text-green-500" />
             <span className="text-gray-700">{likeCount}</span>
           </button>
           <button
@@ -66,7 +95,7 @@ const IdeaCard = ({ idea }) => {
               onClick={(e) => handleVote(e, 'down')}
               disabled={isVoting}
           >
-            <FaThumbsDown className="text-red-500"/>
+            <FaThumbsDown className="text-red-500" />
             <span className="text-gray-700">{dislikeCount}</span>
           </button>
         </div>

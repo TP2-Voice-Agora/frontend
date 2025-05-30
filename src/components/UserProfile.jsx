@@ -91,22 +91,19 @@ const UserProfile = () => {
       setLoadingExtraData(true);
       try {
         const positionsData = await getPositions();
-        console.log(positionsData);
         const userPos = positionsData.find(p => p.id === user.PositionID);
-        console.log(userPos);
         setPositionName(userPos ? userPos.name : 'Должность не указана');
 
-        // Загрузка всех идей и фильтрация по AuthorUID
-        // Предполагается, что объект идеи содержит поле AuthorUID, равное Uid пользователя
         const allIdeas = await getIdeas();
-        const filteredIdeas = allIdeas
+        const ideas = Array.isArray(allIdeas) ? allIdeas : [];
+
+        const filteredIdeas = ideas
             .filter(idea => idea.AuthorUID === user.Uid)
-            .slice(0, 2); // Берем первые две идеи
+            .slice(0, 2);
         setUserCreatedIdeas(filteredIdeas);
 
       } catch (err) {
         console.error('Ошибка загрузки должностей или идей:', err);
-        // Устанавливаем ошибку, только если ранее не было ошибки загрузки пользователя
         setError(prevError => prevError || 'Не удалось загрузить дополнительную информацию профиля.');
         setPositionName('Ошибка загрузки должности');
         setUserCreatedIdeas([]);
@@ -114,6 +111,7 @@ const UserProfile = () => {
         setLoadingExtraData(false);
       }
     };
+
 
     fetchExtraData();
   }, [user, loadingUser]); // Перезапускаем, если изменился объект user или завершилась его загрузка
