@@ -3,13 +3,13 @@ import { createIdea } from '../api'; // Импортируем метод для
 
 // Определяем список фиксированных категорий прямо в компоненте
 const categories = [
-  { id: 1, label: 'Срочно' },
-  { id: 2, label: 'Бюджет' },
-  { id: 3, label: 'Развитие' },
-  { id: 4, label: 'Дизайн/Брендинг' },
-  { id: 5, label: 'Эксперимент' },
-  { id: 6, label: 'Маркетинг' },
-  { id: 7, label: 'Производство' },
+  { id: 0, label: 'Срочно' },
+  { id: 1, label: 'Бюджет' },
+  { id: 2, label: 'Развитие' },
+  { id: 3, label: 'Дизайн/Брендинг' },
+  { id: 4, label: 'Эксперимент' },
+  { id: 5, label: 'Маркетинг' },
+  { id: 6, label: 'Производство' },
 ];
 
 const CreateIdeaForm = ({ onClose }) => {
@@ -81,31 +81,30 @@ const CreateIdeaForm = ({ onClose }) => {
             disabled={loading}
           />
 
-          {/* Поле выбора категории */}
           <select
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-            value={formData.category || ''}
-            onChange={(e) => setFormData({...formData, category: Number(e.target.value)})}
-            disabled={loading}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
+              value={formData.category !== null ? formData.category : ''}
+              onChange={(e) => setFormData({...formData, category: Number(e.target.value)})}
+              disabled={loading}
           >
             <option value="">Выберите категорию</option>
             {categories.map((category) => (
-              <option key={category.id} value={category.id}>{category.label}</option>
+                <option key={category.id} value={category.id}>{category.label}</option>
             ))}
           </select>
 
-          {/* Кнопки действий */}
+
           <div className="flex justify-center space-x-3 mt-auto">
             <button
-              type="submit"
-              disabled={loading}
-              className="bg-blue-500 text-white rounded-2xl px-6 py-3 hover:bg-blue-600 transition-colors"
-              style={{ minWidth: '120px' }}
+                type="submit"
+                disabled={loading}
+                className="bg-blue-500 text-white rounded-2xl px-6 py-3 hover:bg-blue-600 transition-colors"
+                style={{minWidth: '120px'}}
             >
               {loading ? 'Создание...' : 'Создать'}
             </button>
             <button
-              type="button"
+                type="button"
               onClick={onClose}
               disabled={loading}
               className="bg-[#C0C0C0] text-white rounded-2xl px-6 py-3 hover:bg-gray-400 transition-colors"
