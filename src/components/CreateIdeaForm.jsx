@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { createIdea } from '../api'; // Импортируем метод для отправки идей
+import { createIdea } from '../api';
 
-// Определяем список фиксированных категорий прямо в компоненте
 const categories = [
   { id: 0, label: 'Срочно' },
   { id: 1, label: 'Бюджет' },
@@ -14,28 +13,32 @@ const categories = [
 
 const CreateIdeaForm = ({ onClose }) => {
   const [formData, setFormData] = useState({
-    name: '',           // Название идеи
-    text: '',           // Полный текст идеи
-    author: '',         // Автор идеи
-    category: null,     // Выбранная категория
+    name: '',
+    text: '',
+    author: '',
+    category: null,
   });
 
-  const [loading, setLoading] = useState(false); // Индикатор загрузки
-  const [error, setError] = useState(null);      // Ошибка отправки формы
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();                   // Препятствуем стандартной отправке формы
-    setLoading(true);                          // Включаем индикатор загрузки
-    setError(null);                            // Удаляем возможные старые ошибки
+    event.preventDefault();
+    if (formData.name.trim() === '' || formData.text.trim() === '') {
+      setError('Пожалуйста, заполните название и текст идеи.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
 
     try {
-      await createIdea(formData);              // Отправляем данные на сервер
-      onClose();                               // Если всё успешно, закрываем форму
+      await createIdea(formData);
+      onClose();
     } catch (err) {
-      setError('Ошибка при создании идеи. Попробуйте снова позже.'); // Устанавливаем сообщение об ошибке
+      setError('Ошибка при создании идеи. Попробуйте снова позже.');
       console.error('Ошибка создания идеи:', err);
     } finally {
-      setLoading(false);                       // Всегда выключаем индикатор загрузки
+      setLoading(false);
     }
   };
 
@@ -47,7 +50,7 @@ const CreateIdeaForm = ({ onClose }) => {
       <div
         className="bg-[#F2F2F7] rounded-lg shadow-lg w-full max-w-[775px] max-h-[90vh] p-6 flex flex-col"
         style={{ minWidth: '320px' }}
-        onClick={(e) => e.stopPropagation()}  // Останавливаем распространение события клик
+        onClick={(e) => e.stopPropagation()}
       >
         <h1 className="text-2xl font-bold mb-6 text-center">Создать идею</h1>
         
@@ -59,8 +62,7 @@ const CreateIdeaForm = ({ onClose }) => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6 flex flex-col flex-grow overflow-auto">
-          
-          {/* Поле ввода названия идеи */}      
+
           <input
             type="text"
             placeholder="Название (5-6 слов)"
@@ -71,7 +73,6 @@ const CreateIdeaForm = ({ onClose }) => {
             disabled={loading}
           />
 
-          {/* Поле полного текста идеи */}
           <textarea
             placeholder="Полный текст идеи"
             className="w-full p-3 border border-gray-300 rounded-lg h-32 resize-none focus:outline-none focus:ring-0 focus:border-gray-300"

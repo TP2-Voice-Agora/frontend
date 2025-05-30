@@ -50,10 +50,6 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, login: handleLogin, logout }}>
       {children}

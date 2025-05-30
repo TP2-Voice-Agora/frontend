@@ -24,8 +24,28 @@ const IdeaList = () => {
 
   if (loading) {
     return (
-        <div className="flex justify-center items-center my-6">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="flex flex-col px-4 min-h-[2000px]">
+          {loading && (
+              <div className="flex justify-center items-center my-6">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              </div>
+          )}
+
+          {error && !loading && (
+              <div className="text-center my-6 text-red-500">{error}</div>
+          )}
+
+          {!loading && !error && ideas.length === 0 && (
+              <div className="text-center my-6 text-gray-500">Идеи не найдены</div>
+          )}
+
+          {!loading && !error && (
+              ideas.map((idea, index) => (
+                  <div key={idea.ideaUID} className={index !== ideas.length - 1 ? 'mb-0.5' : ''}>
+                    <IdeaCard idea={idea} />
+                  </div>
+              ))
+          )}
         </div>
     );
   }
