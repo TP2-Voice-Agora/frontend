@@ -268,7 +268,7 @@ const IdeaDetail = () => {
                         const author = commentAuthorsMap[comment.AuthorID] || { Name: 'Неизвестный', Surname: 'Автор', PfpURL: null };
                         const commentAuthorFullName = `${author.Name || ''} ${author.Surname || ''}`.trim() || 'Аноним';
                         return (
-                            <li key={comment.CommentUID} className="border-t border-gray-200 pt-6 first:border-t-0 first:pt-0">
+                            <li key={comment.CommentUID} className="pt-6 first:border-t-0 first:pt-0">
                               <div className="flex items-start space-x-3">
                                 <Avatar user={author} />
                                 <div className="flex-1">
@@ -331,7 +331,7 @@ const IdeaDetail = () => {
 
                                   {/* Display existing replies */}
                                   {comment.Replies && comment.Replies.length > 0 && (
-                                      <ul className="mt-4 ml-10 space-y-4 pl-3 border-l-2 border-gray-200">
+                                      <ul className="mt-4 ml-1 space-y-4 pl-3 border-l-2 border-gray-200">
                                         {comment.Replies.map(reply => {
                                           console.log(reply)
                                           const replyAuthor = commentAuthorsMap[reply.AuthorID] || { Name: 'Неизвестный', Surname: 'Автор', PfpURL: null };
