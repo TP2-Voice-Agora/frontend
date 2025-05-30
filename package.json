@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://TP2-Voice-Agora.github.io/frontend",
+  "homepage": "https://voice.ffokildam.ru",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
