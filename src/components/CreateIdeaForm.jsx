@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { createIdea } from '../api';
+import React, { useState } from 'react';
+import { createIdea } from '../api'; // Импортируем метод для отправки идей
 
-// Список фиксированных категорий (соответствует модели IdeaCategory)
+// Определяем список фиксированных категорий прямо в компоненте
 const categories = [
-  { id: 0, label: 'Срочно' },
-  { id: 1, label: 'Бюджет' },
-  { id: 2, label: 'Развитие' },
-  { id: 3, label: 'Дизайн/Брендинг' },
-  { id: 4, label: 'Эксперимент' },
-  { id: 5, label: 'Маркетинг' },
-  { id: 6, label: 'Производство' },
+  { id: 1, label: 'Срочно' },
+  { id: 2, label: 'Бюджет' },
+  { id: 3, label: 'Развитие' },
+  { id: 4, label: 'Дизайн/Брендинг' },
+  { id: 5, label: 'Эксперимент' },
+  { id: 6, label: 'Маркетинг' },
+  { id: 7, label: 'Производство' },
 ];
 
 const CreateIdeaForm = ({ onClose }) => {
@@ -17,38 +17,25 @@ const CreateIdeaForm = ({ onClose }) => {
     name: '',           // Название идеи
     text: '',           // Полный текст идеи
     author: '',         // Автор идеи
-    category_id: null,  // ID категории (для связи с моделью IdeaCategory)
+    category: null,     // Выбранная категория
   });
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await getCategories();
-        // data — массив объектов вида { id, name }
-        setCategories(data);
-      } catch (err) {
-        console.error('Ошибка загрузки категорий:', err);
-      }
-    })();
-  }, []);
 
   const [loading, setLoading] = useState(false); // Индикатор загрузки
   const [error, setError] = useState(null);      // Ошибка отправки формы
 
   const handleSubmit = async (event) => {
-    event.preventDefault();                     // Препятствуем стандартной отправке формы
-    setLoading(true);                           // Включаем индикатор загрузки
-    setError(null);                             // Удаляем возможные старые ошибки
+    event.preventDefault();                   // Препятствуем стандартной отправке формы
+    setLoading(true);                          // Включаем индикатор загрузки
+    setError(null);                            // Удаляем возможные старые ошибки
 
     try {
-      // Отправляем данные на сервер, включая выбранную категорию
-      await createIdea(formData);
-      onClose();                                // Если всё успешно, закрываем форму
+      await createIdea(formData);              // Отправляем данные на сервер
+      onClose();                               // Если всё успешно, закрываем форму
     } catch (err) {
-      setError('Ошибка при создании идеи. Попробуйте снова позже.'); // Сообщаем об ошибке
+      setError('Ошибка при создании идеи. Попробуйте снова позже.'); // Устанавливаем сообщение об ошибке
       console.error('Ошибка создания идеи:', err);
     } finally {
-      setLoading(false);                        // Всегда выключаем индикатор загрузки
+      setLoading(false);                       // Всегда выключаем индикатор загрузки
     }
   };
 
@@ -63,15 +50,17 @@ const CreateIdeaForm = ({ onClose }) => {
         onClick={(e) => e.stopPropagation()}  // Останавливаем распространение события клик
       >
         <h1 className="text-2xl font-bold mb-6 text-center">Создать идею</h1>
-
-        { /* Показываем сообщение об ошибке, если возникла */
-        error && (
+        
+        {/* Показываем ошибку, если возникла */}
+        {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-center">
             {error}
           </div>
-        ) }
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6 flex flex-col flex-grow overflow-auto">
+          
+          {/* Поле ввода названия идеи */}      
           <input
             type="text"
             placeholder="Название (5-6 слов)"
@@ -82,6 +71,7 @@ const CreateIdeaForm = ({ onClose }) => {
             disabled={loading}
           />
 
+          {/* Поле полного текста идеи */}
           <textarea
             placeholder="Полный текст идеи"
             className="w-full p-3 border border-gray-300 rounded-lg h-32 resize-none focus:outline-none focus:ring-0 focus:border-gray-300"
@@ -91,10 +81,11 @@ const CreateIdeaForm = ({ onClose }) => {
             disabled={loading}
           />
 
+          {/* Поле выбора категории */}
           <select
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-            value={formData.category_id || ''}
-            onChange={(e) => setFormData({...formData, category_id: Number(e.target.value)})}
+            value={formData.category || ''}
+            onChange={(e) => setFormData({...formData, category: Number(e.target.value)})}
             disabled={loading}
           >
             <option value="">Выберите категорию</option>
@@ -103,6 +94,7 @@ const CreateIdeaForm = ({ onClose }) => {
             ))}
           </select>
 
+          {/* Кнопки действий */}
           <div className="flex justify-center space-x-3 mt-auto">
             <button
               type="submit"
