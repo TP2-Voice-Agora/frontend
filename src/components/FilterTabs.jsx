@@ -18,7 +18,7 @@ const FilterTabs = ({ activeTab, setActiveTab }) => {
             style={{
               fontFamily: 'Inter, sans-serif',
               fontWeight: 400,
-              backgroundColor: isActive ? tab.color : '#FFFFFF',
+              backgroundColor: isActive ? tab.color : 'transparent',
               color: isActive ? '#FFFFFF' : '#000000',
               border: `1px solid ${tab.color}`
             }}
