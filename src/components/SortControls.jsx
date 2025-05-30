@@ -72,7 +72,7 @@ const SortControls = ({ sortBy, setSortBy, selectedCategories, setSelectedCatego
             >
               <div className="flex items-center gap-[5px]">
                 <img
-                    src="/public/iconamoon-arrow-up-1-thin.svg"
+                    src="/iconamoon-arrow-up-1-thin.svg"
                     alt="arrow-up"
                     className="w-4 h-4 flex-shrink-0"
                 />
@@ -120,7 +120,7 @@ const SortControls = ({ sortBy, setSortBy, selectedCategories, setSelectedCatego
             >
               <div className="flex items-center gap-[5px]">
                 <img
-                    src="/public/iconamoon-arrow-up-1-thin.svg"
+                    src="/iconamoon-arrow-up-1-thin.svg"
                     alt="arrow-up"
                     className="w-4 h-4"
                 />
