@@ -7,7 +7,7 @@ export const TabsWsortByAnima = (): JSX.Element => {
   const tabButtons = [
     {
       id: 1,
-      label: "Все идеи",
+      label: "Всdsa идеи",
       active: true,
       className: "bg-light-themeblue text-white",
     },
