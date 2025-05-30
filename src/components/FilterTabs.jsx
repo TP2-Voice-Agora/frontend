@@ -1,9 +1,9 @@
 const FilterTabs = ({ activeTab, setActiveTab }) => {
   const tabs = [
-    { id: 'all', label: 'Все идеи', color: '#0A84FF' },
-    { id: 'approved', label: 'Одобренные идеи', color: '#70C170' },
-    { id: 'rejected', label: 'Отклоненные идеи', color: '#FF6B6B' },
-    { id: 'neutral', label: 'Нейтральные идеи', color: '#D1D1D1' }
+    { id: '3', label: 'Все идеи', color: '#0A84FF' },
+    { id: '1', label: 'Одобренные идеи', color: '#70C170' },
+    { id: '2', label: 'Отклоненные идеи', color: '#FF6B6B' },
+    { id: '0', label: 'Нейтральные идеи', color: '#D1D1D1' }
   ];
 
   return (

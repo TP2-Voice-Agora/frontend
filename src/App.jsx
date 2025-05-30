@@ -37,7 +37,7 @@ const AppContent = () => {
                 </div>
             </div>
             <div className="mt-5 flex-grow min-h-0 overflow-auto px-6">
-                <IdeaList />
+                <IdeaList sortBy={sortBy} selectedCategories={selectedCategories} activeTab={activeTab} />
             </div>
         </div>
     );
