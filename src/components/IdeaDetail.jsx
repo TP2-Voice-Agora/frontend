@@ -331,7 +331,7 @@ const IdeaDetail = () => {
 
                                   {/* Display existing replies */}
                                   {comment.Replies && comment.Replies.length > 0 && (
-                                      <ul className="mt-4 ml-1 space-y-4 pl-3 border-l-2 border-gray-200">
+                                      <ul className="mt-4 ml-0 space-y-4 pl-3 border-l-2 border-gray-200">
                                         {comment.Replies.map(reply => {
                                           console.log(reply)
                                           const replyAuthor = commentAuthorsMap[reply.AuthorID] || { Name: 'Неизвестный', Surname: 'Автор', PfpURL: null };
