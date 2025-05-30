@@ -2,7 +2,6 @@ import React from 'react';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { likeIdea, dislikeIdea } from '../api';
-import CategoryTag from './CategoryTag';
 
 // Сопоставление ID и названий категорий
 const categoryMap = {
@@ -13,6 +12,12 @@ const categoryMap = {
   4: 'Эксперимент',
   5: 'Маркетинг',
   6: 'Производство'
+};
+
+const statusColorMap = {
+  0: 'bg-white',
+  1: 'bg-[#70C170]',
+  2: 'bg-[#FF6B6B]'
 };
 
 const IdeaCard = ({ idea }) => {
@@ -50,15 +55,19 @@ const IdeaCard = ({ idea }) => {
     return new Date(dateString).toLocaleDateString('ru-RU');
   };
 
-  // Получение названия категории из ID
   const categoryName = categoryMap[idea.CategoryID] || 'Неизвестно';
+  const cardBackgroundClass = statusColorMap[idea.StatusID] || 'bg-white';
+
+  // Цвет названия и даты в зависимости от статуса
+  const textColor = idea.StatusID !== 0 ? 'text-white' : 'text-black';
+  const dateColor = idea.StatusID !== 0 ? 'text-white' : 'text-gray-500';
 
   return (
       <div
-          className="bg-white rounded-lg p-6 mb-4 shadow-sm hover:shadow-md transition-all cursor-pointer relative"
+          className={`${cardBackgroundClass} rounded-lg p-6 mb-4 shadow-lg hover:shadow-xl transition-all cursor-pointer relative`}
           onClick={() => navigate(`/idea/${idea.IdeaUID}`)}
       >
-        <h2 className="text-2xl font-bold mb-4">{idea.Name}</h2>
+        <h2 className={`text-2xl font-bold mb-4 ${textColor}`}>{idea.Name}</h2>
 
         <div className="pt-2">
           <div className="flex flex-wrap gap-2">
@@ -73,7 +82,7 @@ const IdeaCard = ({ idea }) => {
             {categoryName && (
                 <span
                     key={idea.CategoryID}
-                    className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium"
+                    className="bg-blue-700 text-blue-100 text-xs px-3 py-1 rounded-full font-medium"
                 >
               {categoryName}
             </span>
@@ -87,7 +96,7 @@ const IdeaCard = ({ idea }) => {
               onClick={(e) => handleVote(e, 'up')}
               disabled={isVoting}
           >
-            <FaThumbsUp className="text-green-500" />
+            <FaThumbsUp className="text-[#00FF00]" />
             <span className="text-gray-700">{likeCount}</span>
           </button>
           <button
@@ -95,12 +104,12 @@ const IdeaCard = ({ idea }) => {
               onClick={(e) => handleVote(e, 'down')}
               disabled={isVoting}
           >
-            <FaThumbsDown className="text-red-500" />
+            <FaThumbsDown className="text-[#FF0000]" />
             <span className="text-gray-700">{dislikeCount}</span>
           </button>
         </div>
 
-        <div className="absolute bottom-4 right-4 text-sm text-gray-500">
+        <div className={`absolute bottom-4 right-4 text-sm ${dateColor}`}>
           {formatDate(idea.CreationDate)}
         </div>
       </div>

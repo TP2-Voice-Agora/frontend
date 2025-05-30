@@ -82,7 +82,8 @@ export const createComment = async (ideaUID, commentText) => {
 };
 
 
-export const createReply = async ({ commentUID, replyText }) => {
+export const createReply = async (commentUID, replyText) => {
+  console.log(commentUID, replyText);
   const response = await api.post('/replies', { commentUID, replyText });
   return response.data;
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // Link removed as header is global
-import { getIdeaByUID, getUserByUID, getCategories, getStatuses, createComment as apiCreateComment } from '../api';
+import { useParams } from 'react-router-dom';
+import { getIdeaByUID, getUserByUID, getCategories, getStatuses, createComment as apiCreateComment, createReply as apiCreateReply } from '../api';
 
 // Helper Avatar Component
 const Avatar = ({ user, size = "w-10 h-10" }) => {
@@ -41,7 +41,7 @@ const IdeaDetail = () => {
 
   const [ideaDetails, setIdeaDetails] = useState(null);
   const [ideaAuthorDetails, setIdeaAuthorDetails] = useState(null);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState([]); // Will now store comments with their replies
   const [commentAuthorsMap, setCommentAuthorsMap] = useState({});
 
   const [categoriesMap, setCategoriesMap] = useState({});
@@ -49,10 +49,16 @@ const IdeaDetail = () => {
 
   const [newCommentText, setNewCommentText] = useState('');
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+
+  // State for handling replies
+  const [replyingToCommentUID, setReplyingToCommentUID] = useState(null); // UID of comment being replied to
+  const [currentReplyText, setCurrentReplyText] = useState('');
+  const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+  const [submitReplyError, setSubmitReplyError] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [submitError, setSubmitError] = useState(null);
 
 
   const fetchIdeaData = async (isMounted = true) => {
@@ -60,6 +66,7 @@ const IdeaDetail = () => {
     setLoading(true);
     setError(null);
     setSubmitError(null);
+    setSubmitReplyError(null); // Reset reply error on fetch
 
     try {
       const ideaResponse = await getIdeaByUID(id);
@@ -97,20 +104,37 @@ const IdeaDetail = () => {
         setIdeaAuthorDetails(authorData);
       }
 
-      const rawComments = ideaResponse.CommentReplies?.map(cr => cr.Comment).filter(Boolean) || [];
-      setComments(rawComments);
+      // Process comments and their replies
+      const processedComments = (ideaResponse.CommentReplies || []).map(cr => {
+        if (!cr || !cr.Comment || !cr.Comment.CommentUID) return null;
+        return {
+          ...cr.Comment,
+          Replies: cr.Replies || [] // Attach replies array to the comment object
+        };
+      }).filter(Boolean); // Remove any nulls if cr.Comment was invalid
 
-      if (rawComments.length > 0) {
-        const uniqueAuthorIDs = [...new Set(rawComments.map(comment => comment.AuthorID).filter(Boolean))];
+      setComments(processedComments);
+
+      if (processedComments.length > 0) {
+        const authorIDSet = new Set();
+        processedComments.forEach(comment => {
+          if (comment.AuthorID) authorIDSet.add(comment.AuthorID);
+          (comment.Replies || []).forEach(reply => {
+            if (reply.AuthorID) authorIDSet.add(reply.AuthorID); // 'authorID' from reply structure
+          });
+        });
+
+        const uniqueAuthorIDs = Array.from(authorIDSet);
+
         if (uniqueAuthorIDs.length > 0) {
           const authorPromises = uniqueAuthorIDs.map(AuthorID =>
               getUserByUID(AuthorID).catch(e => {
                 console.warn(`Failed to fetch author ${AuthorID}:`, e);
+                // Ensure Uid is present for map key
                 return { Uid: AuthorID, Name: 'Неизвестный', Surname: 'Автор', PfpURL: null };
               })
           );
           const authors = await Promise.all(authorPromises);
-          console.log(authors);
           if (!isMounted) return;
           setCommentAuthorsMap(authors.reduce((acc, author) => {
             if (author) acc[author.UID] = author;
@@ -148,7 +172,7 @@ const IdeaDetail = () => {
     try {
       await apiCreateComment(id, newCommentText);
       setNewCommentText('');
-      await fetchIdeaData();
+      await fetchIdeaData(true); // Pass true for isMounted consistency
     } catch (err) {
       console.error("Failed to post comment:", err);
       setSubmitError("Не удалось отправить комментарий. Попробуйте еще раз.");
@@ -157,7 +181,25 @@ const IdeaDetail = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center h-[calc(100vh-4rem)] text-xl">Загрузка...</div>; // Adjusted height for global appbar
+  const handlePostReply = async (parentCommentUID) => {
+    if (!currentReplyText.trim()) return;
+    setIsSubmittingReply(true);
+    setSubmitReplyError(null);
+    try {
+      await apiCreateReply(parentCommentUID, currentReplyText);
+      setCurrentReplyText('');
+      setReplyingToCommentUID(null);
+      await fetchIdeaData(true);
+    } catch (err) {
+      console.error("Failed to post reply:", err);
+      setSubmitReplyError("Не удалось отправить ответ. Попробуйте еще раз.");
+    } finally {
+      setIsSubmittingReply(false);
+    }
+  };
+
+
+  if (loading) return <div className="flex justify-center items-center h-[calc(100vh-4rem)] text-xl">Загрузка...</div>;
   if (error) return <div className="p-6 m-auto mt-10 max-w-lg text-center text-red-700 bg-red-100 border border-red-400 rounded-lg shadow">{error}</div>;
   if (!ideaDetails) return <div className="p-6 m-auto mt-10 max-w-lg text-center text-gray-600 bg-gray-100 border border-gray-300 rounded-lg shadow">Идея не найдена.</div>;
 
@@ -179,13 +221,11 @@ const IdeaDetail = () => {
   };
 
   const currentStatusName = statusNamesMap[ideaDetails.StatusID] ?? 'Не определен';
+
   const authorFullName = ideaAuthorDetails ? `${ideaAuthorDetails.Name || ''} ${ideaAuthorDetails.Surname || ''}`.trim() : 'Неизвестный автор';
 
-  const categoryTags = [currentCategoryName];
-
   return (
-      <div className="bg-[#EAEAF4] min-h-[calc(100vh-4rem)] font-sans"> {/* Adjusted min-height for global appbar (assuming 4rem height) */}
-        {/* Main Content Area - AppBar removed */}
+      <div className="bg-[#EAEAF4] min-h-[calc(100vh-4rem)] font-sans">
         <main className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row lg:space-x-8">
             {/* Left Column */}
@@ -237,9 +277,80 @@ const IdeaDetail = () => {
                                     <p className="text-xs text-gray-500">{formatDate(comment.Timestamp)}</p>
                                   </div>
                                   <p className="mt-1 text-sm text-gray-700 whitespace-pre-wrap">{comment.CommentText}</p>
-                                  <button className="mt-2 text-xs text-blue-600 hover:text-blue-800 font-medium">
-                                    Ответить
+                                  <button
+                                      onClick={() => {
+                                        if (replyingToCommentUID === comment.CommentUID) {
+                                          setReplyingToCommentUID(null);
+                                          setCurrentReplyText('');
+                                          setSubmitReplyError(null);
+                                        } else {
+                                          setReplyingToCommentUID(comment.CommentUID);
+                                          setCurrentReplyText('');
+                                          setSubmitReplyError(null);
+                                        }
+                                      }}
+                                      className="mt-2 text-xs text-blue-600 hover:text-blue-800 font-medium"
+                                  >
+                                    {replyingToCommentUID === comment.CommentUID ? 'Отменить' : 'Ответить'}
                                   </button>
+
+                                  {/* Reply Input Form */}
+                                  {replyingToCommentUID === comment.CommentUID && (
+                                      <div className="mt-3 ml-10 pl-3 border-l-2 border-gray-200">
+                                      <textarea
+                                          className="w-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                          rows="3"
+                                          placeholder="Напишите ваш ответ..."
+                                          value={currentReplyText}
+                                          onChange={(e) => setCurrentReplyText(e.target.value)}
+                                          disabled={isSubmittingReply}
+                                      />
+                                        {submitReplyError && <p className="text-red-500 text-xs mt-1">{submitReplyError}</p>}
+                                        <div className="mt-2 flex items-center space-x-2">
+                                          <button
+                                              onClick={() => handlePostReply(comment.CommentUID)}
+                                              disabled={isSubmittingReply || !currentReplyText.trim()}
+                                              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs font-medium disabled:opacity-60"
+                                          >
+                                            {isSubmittingReply ? 'Отправка...' : 'Отправить ответ'}
+                                          </button>
+                                          <button
+                                              onClick={() => {
+                                                setReplyingToCommentUID(null);
+                                                setCurrentReplyText('');
+                                                setSubmitReplyError(null);
+                                              }}
+                                              disabled={isSubmittingReply}
+                                              className="text-gray-600 hover:text-gray-800 px-3 py-1 rounded-md text-xs font-medium border border-gray-300 hover:bg-gray-100"
+                                          >
+                                            Отмена
+                                          </button>
+                                        </div>
+                                      </div>
+                                  )}
+
+                                  {/* Display existing replies */}
+                                  {comment.Replies && comment.Replies.length > 0 && (
+                                      <ul className="mt-4 ml-10 space-y-4 pl-3 border-l-2 border-gray-200">
+                                        {comment.Replies.map(reply => {
+                                          console.log(reply)
+                                          const replyAuthor = commentAuthorsMap[reply.AuthorID] || { Name: 'Неизвестный', Surname: 'Автор', PfpURL: null };
+                                          const replyAuthorFullName = `${replyAuthor.Name || ''} ${replyAuthor.Surname || ''}`.trim() || 'Аноним';
+                                          return (
+                                              <li key={reply.replyUID} className="flex items-start space-x-2.5">
+                                                <Avatar user={replyAuthor} size="w-8 h-8" />
+                                                <div className="flex-1">
+                                                  <div className="flex items-baseline justify-between">
+                                                    <p className="text-xs font-semibold text-gray-800">{replyAuthorFullName}</p>
+                                                    <p className="text-xs text-gray-500">{formatDate(reply.Timestamp)}</p>
+                                                  </div>
+                                                  <p className="mt-0.5 text-xs text-gray-700 whitespace-pre-wrap">{reply.ReplyText}</p>
+                                                </div>
+                                              </li>
+                                          );
+                                        })}
+                                      </ul>
+                                  )}
                                 </div>
                               </div>
                             </li>
@@ -254,7 +365,7 @@ const IdeaDetail = () => {
 
             {/* Right Column (Sidebar) */}
             <div className="lg:w-1/3 mt-6 lg:mt-0">
-              <div className="bg-white shadow-lg rounded-xl p-6 sticky top-8"> {/* Adjusted sticky top if global header is present */}
+              <div className="bg-white shadow-lg rounded-xl p-6 sticky top-8">
                 <h2 className="text-xl font-bold text-gray-800 mb-5">Информация об идее</h2>
                 <div className="space-y-3 text-sm">
                   <p><strong className="font-semibold text-gray-600">Автор:</strong> <span
