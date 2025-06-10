@@ -80,6 +80,7 @@ export const createComment = async (ideaUID, commentText) => {
   });
   return response.data;
 };
+// dasd
 
 
 export const createReply = async (commentUID, replyText) => {
